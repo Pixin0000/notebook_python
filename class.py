@@ -1,12 +1,19 @@
+import cv2
 import numpy as np
-a,b,c = map(float,input("(a,b,c) = ?").split())
-arr = [a,b,c]
-for i in range(len(arr)-1):
-    for j in range(len(arr)-1):
-        temp = arr[j+1]
-        if arr[j] <= arr[j+1]:
-            arr[j+1] = arr[j] 
-            arr[j] = temp
-        else :
-            j += 1
-print(arr[0] ,">" , arr[1] , ">" , arr[2])
+import matplotlib.pyplot as plt
+def main():
+    img = cv2.imread("images/lenna.jpeg",0)
+    nr , nc = img.shape[:2]
+    cv2.imshow("asd", img)
+    #histogram(nr , nc)
+def histogram(nr,nc):
+    i = 0
+    j = 0
+    hist = np.zeros([256])
+    for i in nr:
+        for j in nc:
+            x = img[i][j]
+            hist[x] = hist[x] + 1
+    plt.plot(hist)
+    plt.xlim([0,256])
+main()
