@@ -1,6 +1,5 @@
+import sympy as sym
 class Der:
-    def __init__(self,x ):
-        self.x = x
     def dex(self,xpow,time):
         con = 1
         for i in range(time):
@@ -33,8 +32,24 @@ class Der:
             cons = con
             for i in range(time):
                 cons *= xpow * xcon
-            print("原本為"+str(con)+"e^"+ str(xcon) + "x^"+str(xpow)+","+"後來為"+str(cons)+"e^"+ str(xcon)+ "x^"+str(xpow))
-a = Der("x")
-#a.dx(3,"x+1",-2,2)
-a.dex(3,2)
-a.ex(2 , 2 , 2)
+            print("原本為"+str(con)+"e^"+ "(" + str(xcon) + "x^"+str(xpow)+ ")"+","+"後來為"+str(cons)+"x^"+str(time)+"e^"+ "(" + str(xcon)+ "x^" +str(xpow) + ")")
+    def inte(self,xcon,sym,xpow,low,max):
+        x1 = (xcon/(xpow+1))*max**(xpow+1)
+        x2 = (xcon/(xpow+1))*low**(xpow+1)
+        x = x1 - x2
+        print("原本為"+str(xcon)+str(sym)+"^"+str(xpow)+"後來為"+str(xcon/(xpow+1))+str(sym)+"^"+str(xpow+1)+"="+str(x))
+a = Der()
+e = 0
+for i in range(0,10):
+    for j in range(0,10,-1):
+        x = 1
+        e += (x**i) / j
+        print(j)
+        if(j==0):
+            i += 1
+print(e)
+x = sym.symbols('x')
+#a.dx(3,"x-12",2,2)
+#a.ex(2 , 2 , 2)
+a.inte(10,x,2,1,10)
+#print(sym.diff(((x-12)/2)**4,x,2)

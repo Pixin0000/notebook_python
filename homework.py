@@ -1,169 +1,355 @@
-
-from matplotlib import pyplot as plt
-
-from matplotlib import animation
-
-from matplotlib.font_manager import FontProperties
-
-import math
-
-g = 9.8
-
-fig = plt.figure()
-
-ax= fig.add_subplot(111)
-
-ax.set_aspect('equal')
-
-#中文字體路徑 設置
-
-
-#獲取一個列表，有205個間隔數據，每個數據間隔0.005
-
-def get_intervals(u, theta):
-
-    intervals = []
-
-    start = 0
-
-    interval = 0.005
-
-    while start < t_flight:
-
-        intervals.append(start)
-
-        start = start + interval
-
-    return intervals
-
-#更新時間間隔參數，從而不斷改變圓的圓心坐標位置，讓其移動
-
-def update(t):
-
-    x = u*math.cos(theta_radians)*t
-
-    y = u*math.sin(theta_radians)*t - 0.5*g*t*t
-
-    circle.center = x, y
-
-    return circle,
-
-#產生時間間隔參數，（從0,0.005,0.01一直到1.02 ）依次傳遞給updata函數
-
-def generate():
-
-    for t in intervals:
-
-        yield t
-
-def Print():
-
-    print ("初始速度（米/秒）:",u)
-
-    print ("發射角度（度）",theta)
-
-    print ("飛行總時間（秒）",t_flight)
-
-    print ("飛行距離（米）",xmax)
-
-#初始參數，u為初始速度，theta為發射角度
-
-u = 30
-
-theta =60
-
-#返回一個角度的弧度值
-
-theta_radians = math.radians(theta)
-
 '''
+import queue
 
-Out[65]: 0.5235987755982988
+def createMaze():
+    maze = []
+    maze.append(["#","#", "#", "#", "#", "O","#"])
+    maze.append(["#"," ", " ", " ", "#", " ","#"])
+    maze.append(["#"," ", "#", " ", "#", " ","#"])
+    maze.append(["#"," ", "#", " ", " ", " ","#"])
+    maze.append(["#"," ", "#", "#", "#", " ","#"])
+    maze.append(["#"," ", " ", " ", "#", " ","#"])
+    maze.append(["#","#", "#", "#", "#", "X","#"])
+    return maze
 
+def createMaze2():
+    maze = []
+    maze.append(["#","#", "#", "#", "#", "O", "#", "#", "#"])
+    maze.append(["#"," ", " ", " ", " ", " ", " ", " ", "#"])
+    maze.append(["#"," ", "#", " ", "#", " ", "#", " ", "#"])
+    maze.append(["#"," ", "#", " ", " ", " ", "#", " ", "#"])
+    maze.append(["#"," ", "#", " ", "#", " ", "#", " ", "#"])
+    maze.append(["#"," ", "#", " ", "#", " ", "#", " ", "#"])
+    maze.append(["#"," ", "#", " ", "#", " ", "#", "#", "#"])
+    maze.append(["#"," ", " ", " ", " ", " ", " ", " ", "#"])
+    maze.append(["#","#", "#", "#", "#", "#", "#", "X", "#"])
+    return maze
+
+
+def printMaze(maze, path=""):
+    for x, pos in enumerate(maze[0]):
+        if pos == "O":
+            start = x
+
+    i = start
+    j = 0
+    pos = set()
+    for move in path:
+        if move == "L":
+            i -= 1
+
+        elif move == "R":
+            i += 1
+
+        elif move == "U":
+            j -= 1
+
+        elif move == "D":
+            j += 1
+        pos.add((j, i))
+    
+    for j, row in enumerate(maze):
+        for i, col in enumerate(row):
+            if (j, i) in pos:
+                print("1 ", end="")
+            else:
+                print(col + " ", end="")
+        print()
+        
+
+def valid(maze, moves):
+    for x, pos in enumerate(maze[0]):
+        if pos == "O":
+            start = x
+
+    i = start
+    j = 0
+    for move in moves:
+        if move == "L":
+            i -= 1
+
+        elif move == "R":
+            i += 1
+
+        elif move == "U":
+            j -= 1
+
+        elif move == "D":
+            j += 1
+
+        if not(0 <= i < len(maze[0]) and 0 <= j < len(maze)):
+            return False
+        elif (maze[j][i] == "#"):
+            return False
+
+    return True
+
+
+def findEnd(maze, moves):
+    for x, pos in enumerate(maze[0]):
+        if pos == "O":
+            start = x
+
+    i = start
+    j = 0
+    for move in moves:
+        if move == "L":
+            i -= 1
+
+        elif move == "R":
+            i += 1
+
+        elif move == "U":
+            j -= 1
+
+        elif move == "D":
+            j += 1
+
+    if maze[j][i] == "X":
+        print("Found: " + moves)
+        printMaze(maze, moves)
+        return True
+
+    return False
+
+
+# MAIN ALGORITHM
+    nums = queue.Queue()
+    nums.put("1")
+    add = ""
+    maze  = createMaze2()
+
+while not findEnd(maze, add): 
+    add = nums.get()
+    #print(add)
+    for j in ["L", "R", "U", "D"]:
+        put = add + j
+        if valid(maze, put):
+            nums.put(put)
 '''
+import turtle                    # import turtle library
+import time
+import sys
+from collections import deque
 
-#飛彈飛行總時間，運用導數知識可以求得公式
+wn = turtle.Screen()               # define the turtle screen
+wn.bgcolor("black")                # set the background colour
+wn.title("A BFS Maze Solving Program")
+wn.setup(1300,700)                  # setup the dimensions of the working window
 
-t_flight = 2*u*math.sin(theta_radians)/g
 
-intervals = get_intervals(u, theta_radians)
+# this is the class for the Maze
+class Maze(turtle.Turtle):               # define a Maze class
+    def __init__(self):
+        turtle.Turtle.__init__(self)
+        self.shape("square")            # the turtle shape
+        self.color("white")             # colour of the turtle
+        self.penup()                    # lift up the pen so it do not leave a trail
+        self.speed(0)
 
-'''
+# this is the class for the finish line - green square in the maze
+class Green(turtle.Turtle):
+    def __init__(self):
+        turtle.Turtle.__init__(self)
+        self.shape("square")
+        self.color("green")
+        self.penup()
+        self.speed(0)
 
-[0,
+class Blue(turtle.Turtle):
+    def __init__(self):
+        turtle.Turtle.__init__(self)
+        self.shape("square")
+        self.color("blue")
+        self.penup()
+        self.speed(0)
 
-0.005,
 
-0.01,
+# this is the class for the yellow or turtle
+class Red(turtle.Turtle):
+    def __init__(self):
+        turtle.Turtle.__init__(self)
+        self.shape("square")
+        self.color("red")
+        self.penup()
+        self.speed(0)
 
-0.015,
+class Yellow(turtle.Turtle):
+    def __init__(self):
+        turtle.Turtle.__init__(self)
+        self.shape("square")
+        self.color("yellow")
+        self.penup()
+        self.speed(0)
 
-0.02,
 
-0.025,
+# grid = [
+# "+++++++++++++++",
+# "+s+       + +e+",
+# "+ +++++ +++ + +",
+# "+ + +       + +",
+# "+ +   +++ + + +",
+# "+ + + +   + + +",
+# "+   + +   + + +",
+# "+++++ +   + + +",
+# "+     +   +   +",
+# "+++++++++++++++",
+# ]
 
-0.10500000000000002,
+# grid = [
+# "+++++++++",
+# "+ ++s++++",
+# "+ ++ ++++",
+# "+ ++ ++++",
+# "+    ++++",
+# "++++ ++++",
+# "++++ ++++",
+# "+      e+",
+# "+++++++++",
+# ]
 
-0.11000000000000003,
+# grid = [
+# "+++++++++++++++",
+# "+             +",
+# "+             +",
+# "+             +",
+# "+     e       +",
+# "+             +",
+# "+             +",
+# "+             +",
+# "+ s           +",
+# "+++++++++++++++",
+# ]
+grid = [
+"+++++++++++++++++++++++++++++++++++++++++++++++++++",
+"+               +                                 +",
+"+  ++++++++++  +++++++++++++  +++++++  ++++++++++++",
+"+s          +                 +               ++  +",
+"+  +++++++  +++++++++++++  +++++++++++++++++++++  +",
+"+  +     +  +           +  +                 +++  +",
+"+  +  +  +  +  +  ++++  +  +  +++++++++++++  +++  +",
+"+  +  +  +  +  +  +        +  +  +        +       +",
+"+  +  ++++  +  ++++++++++  +  +  ++++  +  +  ++   +",
+"+  +     +  +          +   +           +  +  ++  ++",
+"+  ++++  +  +++++++ ++++++++  +++++++++++++  ++  ++",
+"+     +  +     +              +              ++   +",
+"++++  +  ++++++++++ +++++++++++  ++++++++++  +++  +",
+"+  +  +                    +     +     +  +  +++  +",
+"+  +  ++++  +++++++++++++  +  ++++  +  +  +  ++   +",
+"+  +  +     +     +     +  +  +     +     +  ++  ++",
+"+  +  +  +++++++  ++++  +  +  +  ++++++++++  ++  ++",
+"+                       +  +  +              ++  ++",
+"+ ++++++             +  +  +  +  +++        +++  ++",
+"+ ++++++ ++++++ +++++++++    ++ ++   ++++++++++  ++",
+"+ +    +    +++ +     +++++++++ ++  +++++++    + ++",
+"+ ++++ ++++ +++ + +++ +++    ++    ++    ++ ++ + ++",
+"+ ++++    +     + +++ +++ ++ ++++++++ ++ ++ ++   ++",
+"+      ++ +++++++e+++     ++          ++    +++++++",
+"+++++++++++++++++++++++++++++++++++++++++++++++++++",
+ ]
 
-0.11500000000000003,
 
-.......
+def setup_maze(grid):                          # define a function called setup_maze
+    global start_x, start_y, end_x, end_y      # set up global variables for start and end locations
+    for y in range(len(grid)):                 # read in the grid line by line
+        for x in range(len(grid[y])):          # read each cell in the line
+            character = grid[y][x]             # assign the varaible "character" the the x and y location od the grid
+            screen_x = -588 + (x * 24)         # move to the x location on the screen staring at -588
+            screen_y = 288 - (y * 24)          # move to the y location of the screen starting at 288
 
-0.9900000000000008,
+            if character == "+":
+                maze.goto(screen_x, screen_y)         # move pen to the x and y locaion and
+                maze.stamp()                          # stamp a copy of the turtle on the screen
+                walls.append((screen_x, screen_y))    # add coordinate to walls list
 
-0.9950000000000008,
+            if character == " " or character == "e":
+                path.append((screen_x, screen_y))     # add " " and e to path list
 
-1.0000000000000007,
+            if character == "e":
+                green.color("purple")
+                green.goto(screen_x, screen_y)       # send green sprite to screen location
+                end_x, end_y = screen_x,screen_y     # assign end locations variables to end_x and end_y
+                green.stamp()
+                green.color("green")
 
-1.0050000000000006,
+            if character == "s":
+                start_x, start_y = screen_x, screen_y  # assign start locations variables to start_x and start_y
+                red.goto(screen_x, screen_y)
 
-1.0100000000000005,
 
-1.0150000000000003,
+def endProgram():
+    wn.exitonclick()
+    sys.exit()
 
-1.0200000000000002]
+def search(x,y):
+    frontier.append((x, y))
+    solution[x,y] = x,y
 
-len(intervals)
+    while len(frontier) > 0:          # exit while loop when frontier queue equals zero
+        time.sleep(0)
+        x, y = frontier.popleft()     # pop next entry in the frontier queue an assign to x and y location
 
-Out[67]: 205
+        if(x - 24, y) in path and (x - 24, y) not in visited:  # check the cell on the left
+            cell = (x - 24, y)
+            solution[cell] = x, y    # backtracking routine [cell] is the previous cell. x, y is the current cell
+            #blue.goto(cell)        # identify frontier cells
+            #blue.stamp()
+            frontier.append(cell)   # add cell to frontier list
+            visited.add((x-24, y))  # add cell to visited list
 
-'''
+        if (x, y - 24) in path and (x, y - 24) not in visited:  # check the cell down
+            cell = (x, y - 24)
+            solution[cell] = x, y
+            #blue.goto(cell)
+            #blue.stamp()
+            frontier.append(cell)
+            visited.add((x, y - 24))
+            print(solution)
 
-xmin = 0
+        if(x + 24, y) in path and (x + 24, y) not in visited:   # check the cell on the  right
+            cell = (x + 24, y)
+            solution[cell] = x, y
+            #blue.goto(cell)
+            #blue.stamp()
+            frontier.append(cell)
+            visited.add((x +24, y))
 
-#x橫軸最大距離
+        if(x, y + 24) in path and (x, y + 24) not in visited:  # check the cell up
+            cell = (x, y + 24)
+            solution[cell] = x, y
+            #blue.goto(cell)
+            #blue.stamp()
+            frontier.append(cell)
+            visited.add((x, y + 24))
+        green.goto(x,y)
+        green.stamp()
 
-xmax = u*math.cos(theta_radians)*intervals[-1]
 
-ymin = 0
+def backRoute(x, y):
+    yellow.goto(x, y)
+    yellow.stamp()
+    while (x, y) != (start_x, start_y):    # stop loop when current cells == start cell
+        yellow.goto(solution[x, y])        # move the yellow sprite to the key value of solution ()
+        yellow.stamp()
+        x, y = solution[x, y]               # "key value" now becomes the new key
 
-t_max = u*math.sin(theta_radians)/g
+# set up classes
+maze = Maze()
+red = Red()
+blue = Blue()
+green = Green()
+yellow = Yellow()
 
-#y橫軸最大距離
+# setup lists
+walls = []
+path = []
+visited = set()
+frontier = deque()
+solution = {}                           # solution dictionary
 
-#ymax = u*math.sin(theta)*t_max - 0.5*g*t_max**2
 
-ymax =xmax
-
-#設置坐標軸的x,y取值範圍
-
-ax = plt.axes(xlim=(xmin, xmax), ylim=(ymin, ymax))
-
-#創建一個圓，圓點在（0,0），半徑為0.2
-
-circle = plt.Circle((xmin, ymin), 2)
-
-ax.add_patch(circle)
-
-#動畫函數，讓炮彈不斷變化，generate產生數據傳遞給update更新
-
-anim = animation.FuncAnimation(fig, update,generate,interval=5)
-
-plt.title(u'飛彈發射軌跡')
-
-plt.xlabel(u'水平距離(米)')
-
-plt.ylabel(u'飛彈運行高度（米）')
-
-plt.show()
+# main program starts here ####
+setup_maze(grid)
+search(start_x,start_y)
+backRoute(end_x, end_y)
+wn.exitonclick()
