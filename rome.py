@@ -7,7 +7,7 @@ def roam_to_arab(Rome):
     sum = 0 
     #總數
     i = 0 
-    #迴圈
+    #迴圈123
     j = 0 
     #迴圈
     for i in range(0,len(Rome)-1,2):#每兩個比較
