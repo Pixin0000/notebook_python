@@ -20,7 +20,7 @@ def Sobel_gradient( f, direction = 1 ):
 	return g
 		
 def main( ):
-	img = cv2.imread( "images\Osaka.bmp", -1 )
+	img = cv2.imread( "images\car.jpg", -1 )
 	gx  = Sobel_gradient( img, 1 )
 	gy  = Sobel_gradient( img, 2 )
 	g   = Sobel_gradient( img, 3 )

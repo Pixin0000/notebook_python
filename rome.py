@@ -11,13 +11,11 @@ def roam_to_arab(Rome):
     j = 0 
     #迴圈
     for i in range(0,len(Rome)-1,2):#每兩個比較
-        if(roam[Rome[i]] < roam[Rome[i+1]]):#當後面比較小
+        if(roam[Rome[i]] < roam[Rome[i+1]]):#當後面比較大
             sum += roam[Rome[i+1]] - roam[Rome[i]]
-            print("前比後小"+str(sum))
-        if(roam[Rome[i+1]] <= roam[Rome[i]]):#當後面的數與前面的數相等或比較大，就都加起來
+        if(roam[Rome[i+1]] <= roam[Rome[i]]):#當前面的數與後面的數相等或比較大，就都加起來
             print(Rome[i])
             sum += roam[Rome[i+1]] + roam[Rome[i]]
-            print("後比前小"+str(sum))
     Rome = "".join(Rome)
     print(str(Rome)+" 換為阿拉伯數字為 "+ str(sum))
 def arab_to_roam(num):
@@ -81,6 +79,9 @@ def main():
     num = 944
     rome_list = arab_to_roam(num)
     rome_list = "".join(rome_list)
+
     print(str(num)+" 換為羅馬字母為 "+ rome_list)
+
 main()
+
 
