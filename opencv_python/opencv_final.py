@@ -92,20 +92,8 @@ def devided(gray_img):#二值化
     return gray_img
 def hole_filling(img):
     kernal = np.ones((3,3),np.uint8)#創kernal
-    g = cv2.erode(img,kernal,iterations=3)#侵蝕
+    g = cv2.erode(img,kernal,iterations=2)#侵蝕
     return g
-def retain_num(img):
-    g = img.copy()
-    nr , nc = img.shape[:2]
-    negative = 255 - img
-    n,labels = cv2.connectedComponents(negative)
-    for x in range(nr):
-        for y in range(nc):
-            if labels[x,y] == 0:#若為白色
-               if(x<=110 or x>=440):#只取得介於110~440之間的值
-                    g[x,y] = 0
-    cv2.imshow("final_img",g)
-    devide(g)
 def devide(img):
     nr,nc = img[:2]
     point1 = (0,0)
